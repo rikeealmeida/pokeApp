@@ -10,10 +10,15 @@ class HomeController extends GetxController {
   final isLoading = true.obs;
   final pokemonList = <Pokemon>[].obs;
   final typeList = <PokemonType>[].obs;
+  final pokemonStats = [].obs;
   final inputController = TextEditingController().obs;
   final pokeName = ''.obs;
   final filterVisibility = false.obs;
   final isChecked = false.obs;
+  final url = 'https://pokeapi.co/api/v2/'.obs;
+  final filteredPokemonList = <Pokemon>[].obs;
+
+  pokeFilter(String query) {}
 
   Future<void> getTypes() async {
     try {
@@ -39,30 +44,48 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> getFirst150Pokemon() async {
+  Future<void> getFirstPokemons(int quantity) async {
     try {
       isLoading.value = true;
-      var res = await ApiClient.client
-          .get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=151'));
+      var poke = await ApiClient.client
+          .get(Uri.parse('${url}pokemon?limit=$quantity'));
 
-      if (res.statusCode == 200) {
-        var j = jsonDecode(res.body)['results'];
+      if (poke.statusCode == 200) {
+        var P = jsonDecode(poke.body)['results'];
         var pks = <Map<String, dynamic>>[];
-        for (var i = 0; i < j.length; i++) {
-          var pokemon = j[i];
+        var stats = <List<dynamic>>[];
+        var types = <List<dynamic>>[];
+        for (var i = 0; i < P.length; i++) {
+          var pokemon = P[i];
           pokemon['id'] = "${i + 1}";
+
+          //add stats to object
+          var pokeStats = await ApiClient.client
+              .get(Uri.parse('${url.value}/pokemon/${i + 1}'));
+          var S = jsonDecode(pokeStats.body)['stats'];
+          stats.add(S);
+          pokemon['stats'] = stats[i];
+
+          //add type to object
+          var pokeType = await ApiClient.client
+              .get(Uri.parse('${url.value}/pokemon/${i + 1}'));
+          var T = jsonDecode(pokeType.body)['types'];
+          types.add(T);
+          pokemon['types'] = types[i];
+
+          //add modified object to main array
           pks.add(pokemon);
         }
+
         var encoded = jsonEncode(pks);
+
         pokemonList.value = pokemonFromJson(encoded);
       }
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar(
-        'Error',
-        e.toString(),
-        borderRadius: 5,
+      print(
+        e,
       );
     } finally {
       isLoading.value = false;
@@ -72,9 +95,9 @@ class HomeController extends GetxController {
   void searchPokemon(name) async {}
 
   @override
-  void onInit() {
+  void onInit() async {
+    await getFirstPokemons(10);
     getTypes();
-    getFirst150Pokemon();
     super.onInit();
   }
 
