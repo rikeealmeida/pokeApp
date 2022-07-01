@@ -5,6 +5,7 @@ List<Pokemon> pokemonFromJson(String str) {
 }
 
 class Pokemon {
+  final String id;
   final String name;
   final String type;
   final String image;
@@ -17,6 +18,7 @@ class Pokemon {
 
   Pokemon(
       {this.name,
+      this.id,
       this.type,
       this.image,
       this.hp,
@@ -28,6 +30,7 @@ class Pokemon {
 
   factory Pokemon.fromJson(Map<dynamic, dynamic> json) {
     return Pokemon(
+      id: json['id'],
       name: json["name"],
       type: json.containsKey('types') ? json["types"][0]["type"]["name"] : '',
       image:

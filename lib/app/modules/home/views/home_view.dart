@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
+import 'package:pokeapi/app/modules/home/components/pokemon_view.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -24,7 +25,9 @@ class HomeView extends GetView<HomeController> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                controller.pokeName.value,
+                controller.selectedPokemon['name'] != null
+                    ? controller.selectedPokemon['name']
+                    : '',
                 style: const TextStyle(fontSize: 30),
               ),
             ),
@@ -62,9 +65,9 @@ class HomeView extends GetView<HomeController> {
                         ),
                         InkWell(
                           onTap: () {
-                            // controller.getFirstPokemons(
-                            //     int.tryParse(textController.text));
-                            controller.pokeFilter(controller.pokeName.value);
+                            controller.getFirstPokemons(
+                                int.tryParse(textController.text));
+                            // controller.pokeFilter(controller.pokeName.value);
                           },
                           child: Container(
                             margin: EdgeInsets.all(5),
@@ -142,7 +145,10 @@ class HomeView extends GetView<HomeController> {
                         return Padding(
                           padding: const EdgeInsets.all(10),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              controller.getStats(index + 1);
+                              Get.to(PokemonView());
+                            },
                             child: Card(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -180,107 +186,6 @@ class HomeView extends GetView<HomeController> {
                                           style: const TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.bold),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              height: 25,
-                                              width: 25,
-                                              child: SvgPicture.asset(
-                                                  'assets/icons/pokeball-pokemon-svgrepo-com.svg'),
-                                            ),
-                                            Text(
-                                              "${controller.pokemonList[index].type.capitalize}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 25,
-                                              height: 25,
-                                              child: SvgPicture.asset(
-                                                  'assets/icons/health-care-add-svgrepo-com.svg'),
-                                            ),
-                                            Text(
-                                              "${controller.pokemonList[index].hp}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                                height: 25,
-                                                width: 25,
-                                                child: SvgPicture.asset(
-                                                    'assets/icons/sword-svgrepo-com.svg')),
-                                            Text(
-                                              "${controller.pokemonList[index].attack}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              height: 25,
-                                              width: 25,
-                                              child: SvgPicture.asset(
-                                                  'assets/icons/shield-svgrepo-com.svg'),
-                                            ),
-                                            Text(
-                                              "${controller.pokemonList[index].defense}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Atack speed: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "${controller.pokemonList[index].spAttack}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Defense Speed: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "${controller.pokemonList[index].spDefense}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Speed: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "${controller.pokemonList[index].speed}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
                                         ),
                                       ],
                                     ),

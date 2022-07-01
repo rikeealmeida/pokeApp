@@ -17,6 +17,7 @@ class HomeController extends GetxController {
   final isChecked = false.obs;
   final url = 'https://pokeapi.co/api/v2/'.obs;
   final filteredPokemonList = <Pokemon>[].obs;
+  final selectedPokemon = {}.obs;
 
   pokeFilter(String query) {}
 
@@ -53,18 +54,10 @@ class HomeController extends GetxController {
       if (poke.statusCode == 200) {
         var P = jsonDecode(poke.body)['results'];
         var pks = <Map<String, dynamic>>[];
-        var stats = <List<dynamic>>[];
         var types = <List<dynamic>>[];
         for (var i = 0; i < P.length; i++) {
           var pokemon = P[i];
           pokemon['id'] = "${i + 1}";
-
-          //add stats to object
-          var pokeStats = await ApiClient.client
-              .get(Uri.parse('${url.value}/pokemon/${i + 1}'));
-          var S = jsonDecode(pokeStats.body)['stats'];
-          stats.add(S);
-          pokemon['stats'] = stats[i];
 
           //add type to object
           var pokeType = await ApiClient.client
@@ -72,7 +65,6 @@ class HomeController extends GetxController {
           var T = jsonDecode(pokeType.body)['types'];
           types.add(T);
           pokemon['types'] = types[i];
-
           //add modified object to main array
           pks.add(pokemon);
         }
@@ -84,12 +76,31 @@ class HomeController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      print(
-        e,
-      );
+      print(e);
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void getStats(id) async {
+    //add stats to object
+    var pokeDetails =
+        await ApiClient.client.get(Uri.parse('${url.value}/pokemon/${id}'));
+    var pokemon = {};
+    var S = jsonDecode(pokeDetails.body)['stats'];
+    var P = jsonDecode(pokeDetails.body)['name'];
+
+    pokemon['name'] = P;
+    pokemon['S'] = S;
+    pokemon['id'] = id;
+
+    selectedPokemon.value = pokemon;
+
+    // selectedPokemon.value =
+
+    // var pokemon = S[id];
+    // stats.add(S);
+    // pokemon['stats'] = stats[id];
   }
 
   void searchPokemon(name) async {}
