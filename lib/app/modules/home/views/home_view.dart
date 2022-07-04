@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pokeapi/app/modules/home/components/customDialog/edit_button.dart';
 
 import '../controllers/home_controller.dart';
 import 'pokemon/grid.dart';
@@ -16,7 +17,7 @@ class HomeView extends GetView<HomeController> {
           backgroundColor: Color(0xff8F54E1),
           elevation: 0,
           title: Text(
-            'Pokedéx App',
+            'Pokédex App',
             style: TextStyle(fontSize: 25),
           ),
           actions: [
@@ -27,8 +28,11 @@ class HomeView extends GetView<HomeController> {
                   child: Icon(Icons.favorite),
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Icon(Icons.filter_list)),
+                  padding: const EdgeInsets.all(10),
+                  child: CustomPopupButton(
+                    icon: Icons.filter_list,
+                  ),
+                )
               ],
             )
           ],
